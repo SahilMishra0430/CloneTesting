@@ -128,5 +128,3 @@ router.put('/toggle-shop', protect, async (req, res) => {
 });
 
 module.exports = router;
-
-module.exports = router;
