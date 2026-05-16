@@ -129,9 +129,9 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
       />
 
       {/* Sheet */}
-      <div className="fixed bottom-0 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md w-full z-50 slide-up">
+      <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
         <div
-          className="rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] overflow-y-auto"
+          className=" rounded-2xl w-full max-w-md slide-up"
           style={{ background: '#ae7b45' }}
         >
           {/* Pull handle */}
