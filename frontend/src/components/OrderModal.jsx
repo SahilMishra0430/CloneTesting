@@ -4,7 +4,7 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 // ── UPI config from env vars ──────────────────────────────────────────────────
-const CAFE_UPI_ID   = import.meta.env.VITE_CAFE_UPI_ID   || '9696028522@ybl';
+const CAFE_UPI_ID = import.meta.env.VITE_CAFE_UPI_ID || '9696028522@ybl';
 const CAFE_UPI_NAME = import.meta.env.VITE_CAFE_UPI_NAME || 'Diesel Cafe';
 
 const buildUpiLink = (amount) =>
@@ -17,27 +17,27 @@ const buildQrUrl = (amount) => {
 
 // ── Payment method config ─────────────────────────────────────────────────────
 const PAYMENT_METHODS = [
-  { id: 'upi',         label: '📱 UPI',         sub: 'GPay · PhonePe · Paytm' },
-  { id: 'debit-card',  label: '💳 Debit Card',   sub: 'Visa · Mastercard · RuPay' },
-  { id: 'credit-card', label: '💳 Credit Card',  sub: 'Visa · Mastercard · Amex' },
+  { id: 'upi', label: '📱 UPI', sub: 'GPay · PhonePe · Paytm' },
+  { id: 'debit-card', label: '💳 Debit Card', sub: 'Visa · Mastercard · RuPay' },
+  { id: 'credit-card', label: '💳 Credit Card', sub: 'Visa · Mastercard · Amex' },
 ];
 
 // UTR label changes based on payment method
 const getUtrLabel = (method) => {
-  if (method === 'upi')         return 'UTR / Transaction ID *';
-  if (method === 'debit-card')  return 'Transaction Reference No. *';
+  if (method === 'upi') return 'UTR / Transaction ID *';
+  if (method === 'debit-card') return 'Transaction Reference No. *';
   if (method === 'credit-card') return 'Transaction Reference No. *';
   return 'Transaction ID *';
 };
 
 const getUtrPlaceholder = (method) => {
-  if (method === 'upi')  return 'e.g. 425012345678 (12 digits)';
+  if (method === 'upi') return 'e.g. 425012345678 (12 digits)';
   return 'e.g. TXN123456789';
 };
 
 const getPaymentTitle = (method) => {
-  if (method === 'upi')         return 'Pay via UPI';
-  if (method === 'debit-card')  return 'Pay via Debit Card';
+  if (method === 'upi') return 'Pay via UPI';
+  if (method === 'debit-card') return 'Pay via Debit Card';
   if (method === 'credit-card') return 'Pay via Credit Card';
   return 'Complete Payment';
 };
@@ -46,20 +46,20 @@ const getPaymentTitle = (method) => {
 const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
   const { items, totalAmount, clearCart } = useCart();
 
-  const [step, setStep]               = useState('form');
-  const [orderType, setOrderType]     = useState('dine-in');
-  const [name, setName]               = useState('');
-  const [phone, setPhone]             = useState('');
-  const [table, setTable]             = useState(tableFromQR || '');
-  const [note, setNote]               = useState('');
-  const [utr, setUtr]                 = useState('');
-  const [loading, setLoading]         = useState(false);
+  const [step, setStep] = useState('form');
+  const [orderType, setOrderType] = useState('dine-in');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [table, setTable] = useState(tableFromQR || '');
+  const [note, setNote] = useState('');
+  const [utr, setUtr] = useState('');
+  const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [error, setError]             = useState('');
-  const [utrError, setUtrError]       = useState('');
-  const [orderId, setOrderId]         = useState(null);
+  const [error, setError] = useState('');
+  const [utrError, setUtrError] = useState('');
+  const [orderId, setOrderId] = useState(null);
   const [orderStatus, setOrderStatus] = useState('pending');
-  const [savedTotal, setSavedTotal]   = useState(0);
+  const [savedTotal, setSavedTotal] = useState(0);
   const [savedOrderType, setSavedOrderType] = useState('dine-in');
   const [pickupToken, setPickupToken] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('not_required');
@@ -67,7 +67,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
   // ── NEW: payment method state ─────────────────────────────────────────────
   const [paymentMethod, setPaymentMethod] = useState('upi'); // 'upi' | 'debit-card' | 'credit-card'
 
-  const pollRef       = useRef(null);
+  const pollRef = useRef(null);
   const prevStatusRef = useRef('pending');
 
   useEffect(() => { if (tableFromQR) setTable(tableFromQR); }, [tableFromQR]);
@@ -85,16 +85,16 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
     if (step !== 'success' || !orderId) return;
 
     const TOASTS = {
-      accepted:  { msg: '✅ Order accepted by the kitchen!', icon: '🍳' },
-      preparing: { msg: '👨‍🍳 Chef is preparing your food!',   icon: '🔥' },
-      ready:     { msg: savedOrderType === 'takeaway' ? '🛍️ Ready for pickup!' : '🎉 Your food is ready!', icon: '🍽️' },
-      completed: { msg: '🙏 Thanks! Visit again.',           icon: '☕' },
+      accepted: { msg: '✅ Order accepted by the kitchen!', icon: '🍳' },
+      preparing: { msg: '👨‍🍳 Chef is preparing your food!', icon: '🔥' },
+      ready: { msg: savedOrderType === 'takeaway' ? '🛍️ Ready for pickup!' : '🎉 Your food is ready!', icon: '🍽️' },
+      completed: { msg: '🙏 Thanks! Visit again.', icon: '☕' },
     };
 
     const poll = async () => {
       try {
         const res = await api.get(`/orders/track/${orderId}`);
-        const ns  = res.data.status;
+        const ns = res.data.status;
         if (ns !== prevStatusRef.current) {
           prevStatusRef.current = ns;
           setOrderStatus(ns);
@@ -102,7 +102,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
           if (['ready', 'completed'].includes(ns)) clearInterval(pollRef.current);
         }
         if (res.data.paymentStatus) setPaymentStatus(res.data.paymentStatus);
-      } catch (_) {}
+      } catch (_) { }
     };
 
     poll();
@@ -139,9 +139,9 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
       try {
         const res = await api.post('/orders', {
           customerName: name.trim(),
-          tableNumber:  table.trim(),
-          orderType:    'dine-in',
-          note:         note.trim(),
+          tableNumber: table.trim(),
+          orderType: 'dine-in',
+          note: note.trim(),
           items: items.map((i) => ({ menuItem: i._id, name: i.name, price: i.price, quantity: i.quantity, veg: i.veg })),
         });
         setSavedTotal(totalAmount);
@@ -170,12 +170,12 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
     setSubmitLoading(true);
     try {
       const res = await api.post('/orders', {
-        customerName:  name.trim(),
-        phoneNumber:   phone.trim(),
-        tableNumber:   'Takeaway',
-        orderType:     'takeaway',
-        note:          note.trim(),
-        utrNumber:     utr.trim(),
+        customerName: name.trim(),
+        phoneNumber: phone.trim(),
+        tableNumber: 'Takeaway',
+        orderType: 'takeaway',
+        note: note.trim(),
+        utrNumber: utr.trim(),
         paymentMethod: paymentMethod, // ← SEND payment method to backend
         items: items.map((i) => ({ menuItem: i._id, name: i.name, price: i.price, quantity: i.quantity, veg: i.veg })),
       });
@@ -196,19 +196,23 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
   const isTakeaway = orderType === 'takeaway';
 
   const statusConfig = {
-    pending:   { label: 'Order Received',  icon: '⏳', color: '#ffeb5e', bg: '#fef3c7',
-                 desc: isTakeaway ? 'Admin will verify your payment shortly.' : 'Waiting for kitchen confirmation…' },
-    accepted:  { label: 'Order Accepted!', icon: '✅', color: '#0f742fd0', bg: '#d1fae5', desc: 'Your order is confirmed and being prepared.' },
-    preparing: { label: 'Preparing…',      icon: '👨‍🍳', color: '#4a7c59', bg: '#dbeafe', desc: "Chef is cooking your food. Won't be long!" },
-    ready:     { label: isTakeaway ? 'Ready for Pickup!' : 'Ready to Serve!',
-                 icon: '🎉', color: '#0d571f', bg: '#ecfdf5',
-                 desc: isTakeaway ? '🛍️ Show your pickup token at the counter!' : "Your food is ready! We'll bring it to your table." },
+    pending: {
+      label: 'Order Received', icon: '⏳', color: '#ffeb5e', bg: '#fef3c7',
+      desc: isTakeaway ? 'Admin will verify your payment shortly.' : 'Waiting for kitchen confirmation…'
+    },
+    accepted: { label: 'Order Accepted!', icon: '✅', color: '#0f742fd0', bg: '#d1fae5', desc: 'Your order is confirmed and being prepared.' },
+    preparing: { label: 'Preparing…', icon: '👨‍🍳', color: '#4a7c59', bg: '#dbeafe', desc: "Chef is cooking your food. Won't be long!" },
+    ready: {
+      label: isTakeaway ? 'Ready for Pickup!' : 'Ready to Serve!',
+      icon: '🎉', color: '#0d571f', bg: '#ecfdf5',
+      desc: isTakeaway ? '🛍️ Show your pickup token at the counter!' : "Your food is ready! We'll bring it to your table."
+    },
     completed: { label: 'Completed', icon: '🍽️', color: '#6b7280', bg: '#f3f4f6', desc: 'Thank you for visiting Diesel Café!' },
   };
 
-  const status      = statusConfig[orderStatus] || statusConfig.pending;
+  const status = statusConfig[orderStatus] || statusConfig.pending;
   const statusSteps = ['pending', 'accepted', 'preparing', 'ready'];
-  const currentIdx  = statusSteps.indexOf(orderStatus);
+  const currentIdx = statusSteps.indexOf(orderStatus);
 
   if (!isOpen) return null;
 
@@ -240,13 +244,13 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                 <p className="text-white text-xs font-bold uppercase tracking-widest mb-2 opacity-80">Order Type</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { id: 'dine-in',  label: '🍽️ Dine In' },
+                    { id: 'dine-in', label: '🍽️ Dine In' },
                     { id: 'takeaway', label: '🛍️ Takeaway' },
                   ].map((t) => (
                     <button key={t.id} type="button" onClick={() => setOrderType(t.id)}
                       className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all duration-200 active:scale-[0.97]"
                       style={{
-                        background:  orderType === t.id ? '#940901' : 'rgba(255,255,255,0.15)',
+                        background: orderType === t.id ? '#940901' : 'rgba(255,255,255,0.15)',
                         borderColor: orderType === t.id ? '#940901' : 'rgba(255,255,255,0.3)',
                         color: 'white',
                         boxShadow: orderType === t.id ? '0 4px 12px rgba(148,9,1,0.45)' : 'none',
@@ -390,10 +394,10 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                       onClick={() => setPaymentMethod(m.id)}
                       className="flex flex-col items-center justify-center py-3 px-2 rounded-xl text-xs font-bold border-2 transition-all duration-200 active:scale-[0.97] text-center"
                       style={{
-                        background:  paymentMethod === m.id ? '#940901' : 'rgba(255,255,255,0.12)',
+                        background: paymentMethod === m.id ? '#940901' : 'rgba(255,255,255,0.12)',
                         borderColor: paymentMethod === m.id ? '#940901' : 'rgba(255,255,255,0.25)',
-                        color:       'white',
-                        boxShadow:   paymentMethod === m.id ? '0 4px 12px rgba(148,9,1,0.45)' : 'none',
+                        color: 'white',
+                        boxShadow: paymentMethod === m.id ? '0 4px 12px rgba(148,9,1,0.45)' : 'none',
                       }}
                     >
                       <span className="text-base mb-1 leading-none">
@@ -533,8 +537,8 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest"
                   style={{
                     background: savedOrderType === 'takeaway' ? 'rgba(148,9,1,0.15)' : 'rgba(49,96,61,0.15)',
-                    color:      savedOrderType === 'takeaway' ? '#940901' : '#31603D',
-                    border:     `1px solid ${savedOrderType === 'takeaway' ? '#940901' : '#31603D'}`,
+                    color: savedOrderType === 'takeaway' ? '#940901' : '#31603D',
+                    border: `1px solid ${savedOrderType === 'takeaway' ? '#940901' : '#31603D'}`,
                   }}>
                   {savedOrderType === 'takeaway' ? '🛍️ Takeaway' : '🍽️ Dine In'}
                 </span>
@@ -612,9 +616,9 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                       <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all duration-500"
                         style={{
                           background: idx <= currentIdx ? '#940901' : '#f3f4f6',
-                          color:      idx <= currentIdx ? 'white' : '#9ca3af',
-                          transform:  idx === currentIdx ? 'scale(1.15)' : 'scale(1)',
-                          boxShadow:  idx === currentIdx ? '0 0 0 4px #94080161' : 'none',
+                          color: idx <= currentIdx ? 'white' : '#9ca3af',
+                          transform: idx === currentIdx ? 'scale(1.15)' : 'scale(1)',
+                          boxShadow: idx === currentIdx ? '0 0 0 4px #94080161' : 'none',
                         }}>
                         {idx < currentIdx ? '✓' : idx + 1}
                       </div>
