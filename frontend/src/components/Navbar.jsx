@@ -52,7 +52,7 @@ const Navbar = ({ onCartClick }) => {
               className="font-light text-[10px] uppercase tracking-[0.5em] -mt-0.5"
               style={{ color: '#ede8d0' }}
             >
-              Café
+              Cafa
             </p>
           </div>
         </div>
