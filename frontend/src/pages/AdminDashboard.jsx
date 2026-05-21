@@ -89,6 +89,7 @@ const AdminDashboard = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [stats, setStats] = useState({ totalSales: 0, totalOrders: 0 });
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [orderTypeFilter, setOrderTypeFilter] = useState('all')
@@ -124,19 +125,21 @@ const AdminDashboard = () => {
     try {
       // Add padding to handle tokens without correct base64 padding
       const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      const padded = base64 + '=='.slice((base64.length % 4 || 4) - 1);
+      const padded = base64 + '='.repeat((4 - base64.length % 4) % 4);
       const payload = JSON.parse(atob(padded));
       setAdminName(payload.name || 'Admin');
       if (payload.exp && payload.exp * 1000 < Date.now()) {
         localStorage.removeItem('velvet_vault_admin_token');
         navigate('/admin/login', { replace: true });
+        return;
       }
+      setAuthReady(true);
     } catch (_) {
       // Token unreadable — clear and redirect once
       localStorage.removeItem('velvet_vault_admin_token');
       navigate('/admin/login', { replace: true });
     }
-  }, [navigate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem('velvet_vault_admin_token');
@@ -195,6 +198,7 @@ const AdminDashboard = () => {
   const fetchStats = useCallback(async () => { try { const r = await api.get('/orders/daily-stats'); setStats({ totalSales: r.data.totalSales, totalOrders: r.data.totalOrders }); } catch (_) { } }, []);
 
   useEffect(() => {
+    if (!authReady) return;  // ← wait for token to be confirmed
     const init = async () => {
       setLoading(true);
       await Promise.all([fetchOrders(true), fetchMenu(), fetchStats()]);
@@ -203,7 +207,7 @@ const AdminDashboard = () => {
     init();
     pollRef.current = setInterval(() => fetchOrders(true), 5000);
     return () => clearInterval(pollRef.current);
-  }, []);
+  }, [authReady]);  // ← was [], now depends on authReady
 
   // ── Order status update ───────────────────────────────────────────────────────
   const updateOrderStatus = async (id, status) => {
@@ -464,15 +468,15 @@ const AdminDashboard = () => {
             {/* Order type filter row */}
             <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
               {[
-                { id: 'all',      label: 'All Types' },
-                { id: 'dine-in',  label: '🍽️ Dine In' },
+                { id: 'all', label: 'All Types' },
+                { id: 'dine-in', label: '🍽️ Dine In' },
                 { id: 'takeaway', label: '🛍️ Takeaway' },
               ].map((t) => (
                 <button key={t.id} onClick={() => setOrderTypeFilter(t.id)}
                   className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border transition-all"
                   style={{
-                    background:  orderTypeFilter === t.id ? '#940901' : (document.documentElement.classList.contains('dark') ? '#374151' : 'white'),
-                    color:       orderTypeFilter === t.id ? 'white' : '#6b7280',
+                    background: orderTypeFilter === t.id ? '#940901' : (document.documentElement.classList.contains('dark') ? '#374151' : 'white'),
+                    color: orderTypeFilter === t.id ? 'white' : '#6b7280',
                     borderColor: orderTypeFilter === t.id ? '#940901' : (document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb'),
                   }}>
                   {t.label}
