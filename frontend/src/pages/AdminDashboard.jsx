@@ -59,7 +59,7 @@ const STATUS_COLORS = {
 const NEXT_STATUS = { pending: 'accepted', accepted: 'preparing', preparing: 'ready', ready: 'completed' };
 const STATUS_LABELS = { pending: 'Pending', accepted: 'Accepted', preparing: 'Preparing', ready: 'Ready', completed: 'Completed' };
 const NEXT_LABELS = { pending: '✓ Accept', accepted: '🍳 Start Cooking', preparing: '✅ Mark Ready', ready: '🍽️ Complete' };
-const SUPER_CATS = ['Meals', 'Snacks', 'Salad & Soup', 'Beverages'];
+const SUPER_CATS = ['Chinese','Snacks','Pasta & Maggie','Beverages','Combos',];
 
 // ── Reusable bits ──────────────────────────────────────────────────────────────
 const Spinner = () => (
@@ -97,7 +97,7 @@ const AdminDashboard = () => {
 
   // Menu form state
   const [menuForm, setMenuForm] = useState({
-    superCategory: 'Meals', subCategory: '', name: '', description: '',
+    superCategory: 'Snacks', subCategory: '', name: '', description: '',
     price: '', veg: true, image: '', available: true,
   });
   const [editingId, setEditingId] = useState(null);
@@ -272,7 +272,7 @@ const AdminDashboard = () => {
   // ── Menu CRUD ─────────────────────────────────────────────────────────────────
   const openAddForm = () => {
     setEditingId(null);
-    setMenuForm({ superCategory: 'Meals', subCategory: '', name: '', description: '', price: '', veg: true, image: '', available: true });
+    setMenuForm({ superCategory: 'Snacks', subCategory: '', name: '', description: '', price: '', veg: true, image: '', available: true });
     setFormError(''); setFormOpen(true);
   };
 

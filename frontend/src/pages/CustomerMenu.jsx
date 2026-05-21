@@ -10,7 +10,7 @@ import { useCart } from '../context/CartContext';
 import api from '../api/axios';
 
 
-const SUPER_CATEGORIES = ['All Items', 'Meals', 'Snacks', 'Salad & Soup', 'Beverages'];
+const SUPER_CATEGORIES = ['All Items', 'Chinese', 'Snacks', 'Pasta & Maggie', 'Beverages', 'Combos',];
 
 const CustomerMenu = () => {
   const [searchParams] = useSearchParams();
@@ -28,22 +28,22 @@ const CustomerMenu = () => {
 
   useEffect(() => { fetchMenu(); }, []);
 
-const fetchMenu = async () => {
-  try {
-    setLoading(true);
-    // Use plain axios so no Bearer token is attached
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/menu`);
-    setMenuItems(res.data);
-  } catch (err) {
-    if (err.response?.status === 403) {
-      setShopClosed(true);
-    } else {
-      setError('Failed to load menu. Please refresh.');
+  const fetchMenu = async () => {
+    try {
+      setLoading(true);
+      // Use plain axios so no Bearer token is attached
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/menu`);
+      setMenuItems(res.data);
+    } catch (err) {
+      if (err.response?.status === 403) {
+        setShopClosed(true);
+      } else {
+        setError('Failed to load menu. Please refresh.');
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const subCategories = useCallback(() => {
     const pool = activeSuperCat === 'All Items'
