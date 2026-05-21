@@ -7,13 +7,13 @@ const createAdmin = async () => {
     try {
         await connectDB();
 
-        const existingAdmin = await Admin.findOne({ email: "admin@finaldemo.com" });
+        const existingAdmin = await Admin.findOne({ email: "admin@velvet-vault.com" });
 
         if (existingAdmin) {
             // FIX: delete the old admin — it was created with a double-hashed password.
             // bcrypt.hash() was called in this script AND again in Admin.js pre('save') hook
             // = double-hash = comparePassword always fails = 401 on every login attempt.
-            await Admin.deleteOne({ email: "admin@finaldemo.com" });
+            await Admin.deleteOne({ email: "admin@velvet-vault.com" });
             console.log("Deleted old admin (was double-hashed). Recreating...");
         }
 
@@ -21,13 +21,13 @@ const createAdmin = async () => {
         // calls bcrypt.hash() automatically. Never hash manually before this.
         await Admin.create({
             name: "Admin",
-            email: "admin@finaldemo.com",
-            password: "demopassword",
+            email: "admin@velvet-vault.com",
+            password: "velvetpassword",
         });
 
         console.log("✅ Admin created successfully");
-        console.log("   Email:    admin@finaldemo.com");
-        console.log("   Password: demopassword");
+        console.log("   Email:    admin@velvet-vault.com");
+        console.log("   Password: velvetpassword");
         process.exit();
     } catch (error) {
         console.error("❌ Error creating admin:", error);
