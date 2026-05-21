@@ -8,7 +8,6 @@ const api = axios.create({
 
 const TOKEN_KEY = 'velvet_vault_admin_token';
 
-// Attach JWT token to every request if present
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -18,10 +17,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle 401 globally — only clear the token here, NEVER navigate.
-// window.location.href or navigate() from an axios interceptor causes
-// multiple simultaneous React Router state updates → infinite loop.
-// Navigation on 401 is handled by ProtectedRoute / individual components.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
