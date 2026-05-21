@@ -5,7 +5,7 @@ import api from '../api/axios';
 
 const Navbar = ({ onCartClick }) => {
   const { totalItems, totalAmount } = useCart();
-  const [logoUrl, setLogoUrl] = useState(localStorage.getItem('diesel_logo_url') || '');
+  const [logoUrl, setLogoUrl] = useState(localStorage.getItem('velvet_logo_url') || '');
 
   // Fetch logo from DB on mount (customers see the DB-stored logo, not local upload)
   useEffect(() => {
@@ -13,7 +13,7 @@ const Navbar = ({ onCartClick }) => {
       .then((res) => {
         if (res.data.logoUrl) {
           setLogoUrl(res.data.logoUrl);
-          localStorage.setItem('diesel_logo_url', res.data.logoUrl);
+          localStorage.setItem('velvet_logo_url', res.data.logoUrl);
         }
       })
       .catch(() => { }); // fail silently — use cached logo
@@ -32,7 +32,7 @@ const Navbar = ({ onCartClick }) => {
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 flex items-center justify-center flex-shrink-0"
             style={{ borderColor: 'rgba(214,153,60,0.5)', background: 'rgba(214,153,60,0.15)' }}>
             {logoUrl ? (
-              <img src={logoUrl} alt="Diesel Café" className="w-full h-full object-cover" />
+              <img src={logoUrl} alt="Velvet Vault Café" className="w-full h-full object-cover" />
             ) : (
               <svg viewBox="0 0 24 24" className="w-5 h-5" style={{ fill: '#d6993c' }}>
                 <path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 5v3H6V5h10zm2.5 3H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 8 18.5 8zM4 19h16v2H4z" />
@@ -46,13 +46,13 @@ const Navbar = ({ onCartClick }) => {
               className="font-black tracking-widest uppercase text-sm"
               style={{ fontFamily: '"Playfair Display", serif', color: '#ede8d0', letterSpacing: '0.18em' }}
             >
-              Demo
+              Velvet Vault
             </p>
             <p
               className="font-light text-[10px] uppercase tracking-[0.5em] -mt-0.5"
               style={{ color: '#ede8d0' }}
             >
-              Cafa
+              Cafe
             </p>
           </div>
         </div>

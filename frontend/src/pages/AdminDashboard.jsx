@@ -13,7 +13,7 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '919999999999';
 const formatSingleOrderWA = (order) => {
   const time = new Date(order.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
   const date = new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-  let msg = `🧾 *Diesel Café Order Summary*\n`;
+  let msg = `🧾 *Velvet Vault Order Summary*\n`;
   msg += `${'─'.repeat(26)}\n`;
   msg += `👤 Name: ${order.customerName}\n`;
   msg += `🪑 Table: ${order.tableNumber}\n`;
@@ -31,7 +31,7 @@ const formatSingleOrderWA = (order) => {
 const formatAllOrdersWA = (orders) => {
   const totalSales = orders.reduce((s, o) => s + o.totalAmount, 0);
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  let msg = `☕ *Diesel Café — Orders Export*\n📅 ${date}\n${'─'.repeat(28)}\n\n`;
+  let msg = `☕ *Velvet Vault — Orders Export*\n📅 ${date}\n${'─'.repeat(28)}\n\n`;
   orders.forEach((o, i) => {
     msg += `*Order ${i + 1}*\n`;
     msg += `👤 ${o.customerName}   🪑 ${o.tableNumber}\n`;
@@ -110,13 +110,13 @@ const AdminDashboard = () => {
   const [clearAllConfirm, setClearAllConfirm] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
-  const [logoPreview, setLogoPreview] = useState(localStorage.getItem('diesel_logo_url') || '');
+  const [logoPreview, setLogoPreview] = useState(localStorage.getItem('velvet_vault_logo_url') || '');
 
   const pollRef = useRef(null);
 
   // ── Auth check ────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const token = localStorage.getItem('diesel_admin_token');
+    const token = localStorage.getItem('velvet_vault_admin_token');
     if (!token) return navigate('/admin/login');
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('diesel_admin_token');
+    localStorage.removeItem('velvet_vault_admin_token');
     navigate('/admin/login');
   };
 
@@ -142,11 +142,11 @@ const AdminDashboard = () => {
       setLogoUploading(true);
       try {
         await api.put('/auth/logo', { logoUrl: base64 });
-        localStorage.setItem('diesel_logo_url', base64);
+        localStorage.setItem('velvet_vault_logo_url', base64);
         toast.success('Logo updated! Refresh to see it in navbar.', { icon: '🖼️' });
       } catch (err) {
         toast.error(err.response?.data?.message || 'Failed to upload logo.');
-        setLogoPreview(localStorage.getItem('diesel_logo_url') || '');
+        setLogoPreview(localStorage.getItem('velvet_vault_logo_url') || '');
       } finally {
         setLogoUploading(false);
       }
@@ -158,7 +158,7 @@ const AdminDashboard = () => {
     setLogoUploading(true);
     try {
       await api.put('/auth/logo', { logoUrl: '' });
-      localStorage.removeItem('diesel_logo_url');
+      localStorage.removeItem('velvet_vault_logo_url');
       setLogoPreview('');
       toast.success('Logo removed.');
     } catch (_) { toast.error('Failed to remove logo.'); }
@@ -329,15 +329,15 @@ const AdminDashboard = () => {
       <header className="sticky top-0 z-40 shadow-lg" style={{ background: 'linear-gradient(135deg,#243f47 0%,#325862 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            {localStorage.getItem('diesel_logo_url') ? (
-              <img src={localStorage.getItem('diesel_logo_url')} alt="logo" className="w-9 h-9 rounded-full object-cover border-2 border-white/30" />
+            {localStorage.getItem('velvet_logo_url') ? (
+              <img src={localStorage.getItem('velvet_logo_url')} alt="logo" className="w-9 h-9 rounded-full object-cover border-2 border-white/30" />
             ) : (
               <div className="w-9 h-9 rounded-full bg-white/15 border border-white/20 flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white"><path d="M2 21h18v-2H2v2zM20 8H4V5h16v3zm-2 7H6V9h12v6z" /></svg>
               </div>
             )}
             <div>
-              <p className="font-black text-white text-sm tracking-widest">DIESEL CAFÉ</p>
+              <p className="font-black text-white text-sm tracking-widest">VELVET VAULT CAFE</p>
               <p className="text-white/40 text-[10px]">Admin · {adminName}</p>
             </div>
           </div>

@@ -11,7 +11,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('diesel_admin_token');
+    const token = localStorage.getItem('velvet_vault_admin_token');
     if (token) navigate('/admin/dashboard');
   }, [navigate]);
 
@@ -22,7 +22,7 @@ const AdminLogin = () => {
     setError('');
     try {
       const res = await api.post('/auth/login', { email: email.trim(), password });
-      localStorage.setItem('diesel_admin_token', res.data.token);
+      localStorage.setItem('velvet_vault_admin_token', res.data.token);
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Check your credentials.');
@@ -63,15 +63,15 @@ const AdminLogin = () => {
             className="w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center shadow-2xl"
             style={{ background: 'linear-gradient(135deg, #325862, #243f47)', boxShadow: '0 12px 40px rgba(0,123,139,0.4)' }}
           >
-            {localStorage.getItem('diesel_logo_url') ? (
-              <img src={localStorage.getItem('diesel_logo_url')} alt="logo" className="w-full h-full rounded-2xl object-cover" />
+            {localStorage.getItem('velvet_logo_url') ? (
+              <img src={localStorage.getItem('velvet_logo_url')} alt="logo" className="w-full h-full rounded-2xl object-cover" />
             ) : (
               <svg viewBox="0 0 24 24" className="w-10 h-10 fill-white">
                 <path d="M2 21h18v-2H2v2zM20 8H4V5h16v3zm-2 7H6V9h12v6z" />
               </svg>
             )}
           </div>
-          <h1 className="text-white font-black text-4xl tracking-widest" style={{ fontFamily: '"Playfair Display", serif', color: '#d6993c', letterSpacing: '0.2em' }}>DIESEL</h1>
+          <h1 className="text-white font-black text-4xl tracking-widest" style={{ fontFamily: '"Playfair Display", serif', color: '#d6993c', letterSpacing: '0.2em' }}>VELVET VAULT</h1>
           <p className="font-light text-sm tracking-[0.6em] uppercase mt-1" style={{ color: '#d6993c' }}>
             Café Admin
           </p>
@@ -101,7 +101,7 @@ const AdminLogin = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@dieselcafe.com"
+                placeholder="admin@velvetvault.com"
                 autoComplete="email"
                 className="w-full rounded-xl px-4 py-3 text-white text-sm font-medium placeholder-white/20 focus:outline-none transition-all"
                 style={{
@@ -186,7 +186,7 @@ const AdminLogin = () => {
         </div>
 
         <p className="text-center text-xs mt-8" style={{ color: 'rgba(255,255,255,0.2)' }}>
-          Diesel Café Management System © {new Date().getFullYear()}
+          Velvet Vault Café Management System © {new Date().getFullYear()}
         </p>
       </div>
     </div>
