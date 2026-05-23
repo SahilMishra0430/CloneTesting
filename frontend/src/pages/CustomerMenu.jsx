@@ -83,7 +83,7 @@ const CustomerMenu = () => {
   const hasItems = Object.keys(groups).length > 0;
 
   return (
-    <div className="min-h-screen font-poppins" style={{ background: '#f8eecb' }}>
+    <div className="min-h-screen font-poppins" style={{ background: '#ffffff' }}>
 
       {/* ✅ ADD THIS BLOCK — shop closed screen */}
       {shopClosed && (
@@ -161,7 +161,7 @@ const CustomerMenu = () => {
           {/* Super Category Tabs */}
           {!searchQuery && (
             <div className="sticky top-[125px] z-20 shadow-md"
-              style={{ background: '#940901' }}>
+              style={{ background: '#D33244' }}>
               <div className="max-w-lg mx-auto">
                 <div className="flex overflow-x-auto no-scrollbar px-3 py-2.5 gap-1.5">
                   {SUPER_CATEGORIES.map((cat) => {
@@ -174,8 +174,8 @@ const CustomerMenu = () => {
                         className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-250 flex items-center gap-1.5"
                         style={{
                           fontFamily: 'Poppins, sans-serif',
-                          background: active ? '#ffeb5b' : 'transparent',
-                          color: active ? '#1a1a1a' : 'rgba(244,234,168,0.75)',
+                          background: active ? '#ffffff' : 'transparent',
+                          color: active ? '#1a1a1a' : 'rgba(255, 255, 255, 0.75)',
                           boxShadow: active ? '0 2px 10px rgba(0, 0, 0, 0.45)' : 'none',
                           border: active ? 'none' : '1px solid #dbc5ae',
                         }}
@@ -183,7 +183,7 @@ const CustomerMenu = () => {
                         {cat}
                         {count > 0 && (
                           <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full"
-                            style={{ background: active ? 'rgba(0,0,0,0.15)' : 'rgba(214,153,60,0.3)', color: active ? '#1a1a1a' : '#d6993c' }}>
+                            style={{ background: active ? 'rgba(0,0,0,0.15)' : 'rgba(0, 0, 0, 0.3)', color: active ? '#1a1a1a' : '#ffffff' }}>
                             {count}
                           </span>
                         )}
@@ -197,7 +197,7 @@ const CustomerMenu = () => {
 
           {/* Sub Category Pills */}
           {!searchQuery && subs.length > 2 && (
-            <div className="sticky top-[178px] z-40" style={{ background: '#d50801', borderBottom: '1px solid rgba(214,153,60,0.15)' }}>
+            <div className="sticky top-[178px] z-40" style={{ background: '#f87d7d', borderBottom: '1px solid rgba(214,153,60,0.15)' }}>
               <div className="max-w-lg mx-auto">
                 <div className="flex overflow-x-auto no-scrollbar px-3 py-2 gap-1.5">
                   {subs.map((sub) => {
@@ -207,7 +207,7 @@ const CustomerMenu = () => {
                         className="flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200"
                         style={{
                           fontFamily: 'Poppins, sans-serif',
-                          background: active ? '#4e2c21' : '#d89d5d',
+                          background: active ? '#4e2c21' : '#ffffff',
                           color: active ? 'white' : '#4e2c21',
                           borderColor: active ? '#dbc5ae' : 'rgba(229, 229, 229, 0.25)',
                         }}
@@ -242,7 +242,7 @@ const CustomerMenu = () => {
                 </p>
               </div>
             ) : (
-              <div className="bg-black bg-menu-section rounded-full mt-4 p-3 space-y-6" style={{ background: '#d89d5d' }}>
+              <div className="bg-black bg-menu-section rounded-full mt-4 p-3 space-y-6" style={{ background: '#D33244' }}>
                 {Object.entries(groups).map(([subCat, items]) => (
                   <div key={subCat}>
                     {/* Section header */}

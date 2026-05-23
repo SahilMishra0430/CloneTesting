@@ -32,7 +32,6 @@ export const usePushNotifications = () => {
   }, []);
 
   const subscribe = useCallback(async () => {
-    if (!swReg) return;
     setLoading(true);
     try {
       // 1. Ask for notification permission
@@ -42,16 +41,19 @@ export const usePushNotifications = () => {
         return;
       }
 
-      // 2. Fetch our VAPID public key from the backend
+      // 2. Wait until the SW is fully active (fixes "push service error")
+      const reg = await navigator.serviceWorker.ready;
+
+      // 3. Fetch our VAPID public key from the backend
       const { data } = await api.get('/push/public-key');
 
-      // 3. Subscribe this browser to push
-      const subscription = await swReg.pushManager.subscribe({
+      // 4. Subscribe this browser to push
+      const subscription = await reg.pushManager.subscribe({
         userVisibleOnly:      true,
         applicationServerKey: urlBase64ToUint8Array(data.publicKey),
       });
 
-      // 4. Save subscription to our backend
+      // 5. Save subscription to our backend
       await api.post('/push/subscribe', subscription.toJSON());
       setSubscribed(true);
     } catch (err) {
@@ -60,15 +62,14 @@ export const usePushNotifications = () => {
     } finally {
       setLoading(false);
     }
-  }, [swReg]);
+  }, []);
 
   const unsubscribe = useCallback(async () => {
-    if (!swReg) return;
     setLoading(true);
     try {
-      const subscription = await swReg.pushManager.getSubscription();
+      const reg = await navigator.serviceWorker.ready;
+      const subscription = await reg.pushManager.getSubscription();
       if (subscription) {
-        // Tell our backend to remove this subscription
         await api.delete('/push/subscribe', { data: { endpoint: subscription.endpoint } });
         await subscription.unsubscribe();
       }
@@ -78,7 +79,7 @@ export const usePushNotifications = () => {
     } finally {
       setLoading(false);
     }
-  }, [swReg]);
+  }, []);
 
   return { supported, subscribed, loading, subscribe, unsubscribe };
 };

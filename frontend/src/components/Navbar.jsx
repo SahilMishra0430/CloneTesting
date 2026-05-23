@@ -22,7 +22,7 @@ const Navbar = ({ onCartClick }) => {
   return (
     <nav
       className="sticky top-0 z-40 shadow-brand"
-      style={{ background: 'linear-gradient(135deg, #a61106 0%, #91140b 60%, #7e150d 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #D33244 0%, #D33244 60%, #D33244 100%)' }}
     >
       <div className="max-w-lg mx-auto px-4 h-16 flex items-center justify-between gap-4">
 

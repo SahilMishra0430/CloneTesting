@@ -117,9 +117,9 @@ const MenuCard = ({ item }) => {
                 className="flex-1 py-1 rounded-lg text-[10px] font-bold transition-all duration-150 active:scale-95"
                 style={{
                   fontFamily: 'Poppins,sans-serif',
-                  background: selectedSize === 'full' ? '#325862' : 'rgba(50,88,98,0.08)',
+                  background: selectedSize === 'full' ? '#A9BE55' : 'rgba(50,88,98,0.08)',
                   color:      selectedSize === 'full' ? 'white'   : '#325862',
-                  border:     `1px solid ${selectedSize === 'full' ? '#325862' : 'rgba(50,88,98,0.25)'}`,
+                  border:     `1px solid ${selectedSize === 'full' ? '#ffffff' : 'rgba(50,88,98,0.25)'}`,
                 }}
               >
                 Full · ₹{item.fullPrice}

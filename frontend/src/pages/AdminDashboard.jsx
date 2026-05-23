@@ -489,8 +489,8 @@ const AdminDashboard = () => {
               </div>
             )}
             <div>
-              <p className="font-black text-white text-sm tracking-widest">VELVET VAULT CAFE</p>
-              <p className="text-white/40 text-[10px]">Admin · {adminName}</p>
+              <p className="font-black text-white text-sm tracking-widest">VELVET</p>
+              <p className="text-white/40 text-[10px]">Admin · Abhay</p>
             </div>
           </div>
 

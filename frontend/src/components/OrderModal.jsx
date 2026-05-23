@@ -197,7 +197,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
 
   const statusConfig = {
     pending: {
-      label: 'Order Received', icon: '⏳', color: '#ffeb5e', bg: '#fef3c7',
+      label: 'Order Received', icon: '⏳', color: '#786c16', bg: '#fef3c7',
       desc: isTakeaway ? 'Admin will verify your payment shortly.' : 'Waiting for kitchen confirmation…'
     },
     accepted: { label: 'Order Accepted!', icon: '✅', color: '#0f742fd0', bg: '#d1fae5', desc: 'Your order is confirmed and being prepared.' },
@@ -224,7 +224,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
       {/* Sheet */}
       <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
         <div className="rounded-2xl w-full max-w-md slide-up overflow-y-auto max-h-[92vh]"
-          style={{ background: '#ae7b45' }}>
+          style={{ background: '#A9BE55' }}>
 
           {/* Pull handle */}
           <div className="flex justify-center pt-3 pb-1 sm:hidden">
@@ -235,13 +235,13 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
           {step === 'form' && (
             <>
               <div className="px-6 pt-5 pb-2">
-                <h2 className="font-black text-xl tracking-wide text-white">PLACE ORDER</h2>
-                <p className="text-gray-100 text-sm mt-1">{items.length} item(s) · ₹{totalAmount}</p>
+                <h2 className="font-black text-xl tracking-wide text-black">PLACE ORDER</h2>
+                <p className="text-gray-800 text-sm mt-1">{items.length} item(s) · ₹{totalAmount}</p>
               </div>
 
               {/* Order type selector */}
               <div className="mx-6 mb-3">
-                <p className="text-white text-xs font-bold uppercase tracking-widest mb-2 opacity-80">Order Type</p>
+                <p className="text-black text-xs font-bold uppercase tracking-widest mb-2 opacity-80">Order Type</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { id: 'dine-in', label: '🍽️ Dine In' },
@@ -250,8 +250,8 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                     <button key={t.id} type="button" onClick={() => setOrderType(t.id)}
                       className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all duration-200 active:scale-[0.97]"
                       style={{
-                        background: orderType === t.id ? '#940901' : 'rgba(255,255,255,0.15)',
-                        borderColor: orderType === t.id ? '#940901' : 'rgba(255,255,255,0.3)',
+                        background: orderType === t.id ? '#940901' : 'rgba(0, 0, 0, 0.3)',
+                        borderColor: orderType === t.id ? '#940901' : 'rgba(0, 0, 0, 0.56)',
                         color: 'white',
                         boxShadow: orderType === t.id ? '0 4px 12px rgba(148,9,1,0.45)' : 'none',
                       }}>
@@ -261,7 +261,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                 </div>
                 {isTakeaway && (
                   <div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold"
-                    style={{ background: 'rgba(0,0,0,0.2)', color: '#ffd700', border: '1px solid rgba(255,215,0,0.25)' }}>
+                    style={{ background: 'rgba(0,0,0,0.2)', color: '#ffffff', border: '1px solid rgba(0, 0, 0, 0.25)' }}>
                     💳 Takeaway requires payment
                   </div>
                 )}
@@ -285,7 +285,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
               <form onSubmit={handleFormSubmit} className="px-6 pb-6 space-y-3">
                 {/* Name */}
                 <div>
-                  <label className="block font-bold text-sm mb-1 text-gray-100">Your Name *</label>
+                  <label className="block font-bold text-sm mb-1 text-gray-800">Your Name *</label>
                   <input type="text" value={name} onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name" className="input-base" maxLength={50} autoFocus />
                 </div>
@@ -293,7 +293,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                 {/* Phone — takeaway only */}
                 {isTakeaway && (
                   <div>
-                    <label className="block font-bold text-sm mb-1 text-gray-100">Mobile Number *</label>
+                    <label className="block font-bold text-sm mb-1 text-gray-800">Mobile Number *</label>
                     <div className="flex gap-2">
                       <div className="flex items-center justify-center px-3 rounded-xl font-bold text-sm bg-white text-gray-600 flex-shrink-0"
                         style={{ border: '1.5px solid #e2d9c0', minWidth: '52px' }}>
@@ -311,7 +311,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                 {/* Table — dine-in only */}
                 {!isTakeaway && (
                   <div>
-                    <label className="block font-bold text-sm mb-1 text-gray-100">Table Number *</label>
+                    <label className="block font-bold text-sm mb-1 text-gray-800">Table Number *</label>
                     <input type="number" value={table} onChange={(e) => setTable(e.target.value)}
                       placeholder="e.g. 5" className="input-base"
                       readOnly={!!tableFromQR}
@@ -323,8 +323,8 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
 
                 {/* Note */}
                 <div>
-                  <label className="block font-bold text-sm mb-1 text-gray-100">
-                    Special Note <span className="font-normal text-gray-100">(optional)</span>
+                  <label className="block font-bold text-sm mb-1 text-gray-800">
+                    Special Note <span className="font-normal text-gray-800">(optional)</span>
                   </label>
                   <textarea value={note} onChange={(e) => setNote(e.target.value)}
                     placeholder="Allergies or special requests?" rows={2}
@@ -351,7 +351,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full spin inline-block" />
                         Placing…
                       </span>
-                    ) : isTakeaway ? 'Proceed to Pay →' : 'CONFIRM'}
+                    ) : isTakeaway ? 'Proceed to Pay' : 'CONFIRM'}
                   </button>
                 </div>
               </form>
@@ -469,7 +469,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
 
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.2)' }} />
-                <p className="text-white/50 text-xs font-semibold whitespace-nowrap">
+                <p className="text-white text-xs font-semibold whitespace-nowrap">
                   {paymentMethod === 'upi' ? 'After paying, enter UTR below' : 'Enter transaction reference below'}
                 </p>
                 <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.2)' }} />
@@ -490,7 +490,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                     maxLength={30}
                     inputMode="text"
                   />
-                  <p className="text-white/55 text-xs mt-1">
+                  <p className="text-white text-xs mt-1">
                     {paymentMethod === 'upi'
                       ? 'Find UTR in your UPI app under payment history'
                       : 'Find this in your bank SMS or transaction receipt'}
@@ -514,7 +514,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
                   ) : "I've Paid — Place Order"}
                 </button>
 
-                <p className="text-center text-white/40 text-xs">
+                <p className="text-center text-white text-xs">
                   Your order will be confirmed after payment verification
                 </p>
               </form>

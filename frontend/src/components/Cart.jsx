@@ -11,10 +11,10 @@ const Cart = ({ onCheckout }) => {
       <div className="fixed inset-0 bg-black/50 z-50 fade-in" onClick={closeCart} />
       <div
         className="fixed right-0 top-0 h-full w-full max-w-sm z-50 flex flex-col shadow-2xl slide-in"
-        style={{ background: '#F8EECB' }}
+        style={{ background: '#ffffff' }}
       >
         {/* Header */}
-        <div className="px-5 py-4 flex items-center justify-between" style={{ background: '#940901' }}>
+        <div className="px-5 py-4 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #D33244 0%, #D33244 60%, #D33244 100%)' }}>
           <div>
             <h2
               className="font-black text-lg tracking-wide text-white"
@@ -59,8 +59,8 @@ const Cart = ({ onCheckout }) => {
                 className="rounded-xl p-3 flex gap-3"
                 style={{
                   background: '#F8FAEE',
-                  border: '1px solid rgba(214,153,60,0.18)',
-                  boxShadow: '0 2px 8px rgba(50,88,98,0.06)',
+                  border: '1px solid rgba(0, 0, 0, 0.08)',
+                  boxShadow: '0 2px 8px rgba(50, 88, 98, 0.61)',
                 }}
               >
                 <div className="flex-1">
