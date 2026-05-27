@@ -1,14 +1,15 @@
-const express          = require('express');
-const webpush          = require('web-push');
+const express = require('express');
+const webpush = require('web-push');
 const PushSubscription = require('../models/PushSubscription');
-const { protect }      = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
 const router = express.Router();
+const cafeConfig = require('../config/cafeConfig');
 
 webpush.setVapidDetails(
-  'mailto:admin@velvetvault.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
+  `mailto:${cafeConfig.cafe.vapidEmail}`,
+  cafeConfig.env.vapidPublicKey,
+  cafeConfig.env.vapidPrivateKey
 );
 
 // GET /api/push/public-key — public, frontend needs this to subscribe

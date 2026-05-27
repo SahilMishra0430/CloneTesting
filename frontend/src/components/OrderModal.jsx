@@ -3,10 +3,11 @@ import { useCart } from '../context/CartContext';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { saveMyOrder } from '../utils/myOrders';
+import { cafeConfig } from '../config/cafeConfig';
 
 // ── UPI config from env vars ──────────────────────────────────────────────────
-const CAFE_UPI_ID = import.meta.env.VITE_CAFE_UPI_ID || '9696028522@ybl';
-const CAFE_UPI_NAME = import.meta.env.VITE_CAFE_UPI_NAME || 'Diesel Cafe';
+const CAFE_UPI_ID = cafeConfig.contact.upiId;
+const CAFE_UPI_NAME = cafeConfig.contact.upiName;
 
 const buildUpiLink = (amount) =>
   `upi://pay?pa=${CAFE_UPI_ID}&pn=${encodeURIComponent(CAFE_UPI_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent('Takeaway Order')}`;
@@ -232,7 +233,7 @@ const OrderModal = ({ isOpen, onClose, tableFromQR }) => {
       icon: '🎉', color: '#0d571f', bg: '#ecfdf5',
       desc: isTakeaway ? '🛍️ Show your pickup token at the counter!' : "Your food is ready! We'll bring it to your table."
     },
-    completed: { label: 'Completed', icon: '🍽️', color: '#6b7280', bg: '#f3f4f6', desc: 'Thank you for visiting Diesel Café!' },
+    completed: { label: 'Completed', icon: '🍽️', color: '#6b7280', bg: '#f3f4f6', desc: `Thank you for visiting ${cafeConfig.name}!` },
   };
 
   const status = statusConfig[orderStatus] || statusConfig.pending;

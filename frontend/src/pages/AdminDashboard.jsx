@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { cafeConfig } from '../config/cafeConfig';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
 import { usePushNotifications } from '../hooks/usePushNotifications';
+import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from '../components/ThemeToggle';
 import ChangePassword from '../components/ChangePassword';
 import ShopToggle from '../components/ShopToggle';
 import SalesAnalytics from '../components/SalesAnalytics';
 import AnalyticsPanel from '../components/AnalyticsPanel';
 // ── WhatsApp helpers ───────────────────────────────────────────────────────────
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '919999999999';
+const WHATSAPP_NUMBER = cafeConfig.contact.whatsapp;
 
 const formatSingleOrderWA = (order) => {
   const time = new Date(order.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
   const date = new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-  let msg = `🧾 *Velvet Vault Order Summary*\n`;
+  let msg = `🧾 *${cafeConfig.name} Order Summary*\n`;
   msg += `${'─'.repeat(26)}\n`;
   msg += `👤 Name: ${order.customerName}\n`;
   msg += `🪑 Table: ${order.tableNumber}\n`;
@@ -32,7 +34,7 @@ const formatSingleOrderWA = (order) => {
 const formatAllOrdersWA = (orders) => {
   const totalSales = orders.reduce((s, o) => s + o.totalAmount, 0);
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  let msg = `☕ *Velvet Vault — Orders Export*\n📅 ${date}\n${'─'.repeat(28)}\n\n`;
+  let msg = `☕ *${cafeConfig.name} — Orders Export*\n📅 ${date}\n${'─'.repeat(28)}\n\n`;
   orders.forEach((o, i) => {
     msg += `*Order ${i + 1}*\n`;
     msg += `👤 ${o.customerName}   🪑 ${o.tableNumber}\n`;
@@ -97,7 +99,7 @@ const QRGenerator = () => {
     const win = window.open('', '_blank');
     const tableNums = Array.from({ length: count }, (_, i) => i + 1);
     win.document.write(`
-      <html><head><title>Table QR Codes — Velvet Vault</title>
+      <html><head><title>Table QR Codes — ${cafeConfig.name}</title>
       <style>
         body { margin: 0; font-family: 'Georgia', serif; background: #fff; }
         h1 { text-align: center; color: #982829; font-size: 22px; margin: 24px 0 4px; letter-spacing: 0.2em; text-transform: uppercase; }
@@ -109,7 +111,7 @@ const QRGenerator = () => {
         .sub   { font-size: 10px; color: #aaa; margin-top: 3px; word-break: break-all; }
         @media print { .grid { grid-template-columns: repeat(4, 1fr); } }
       </style></head><body>
-      <h1>Velvet Vault</h1>
+      <h1>${cafeConfig.name}</h1>
       <p>Scan to order from your table</p>
       <div class="grid">
         ${tableNums.map((n) => `
@@ -126,18 +128,18 @@ const QRGenerator = () => {
 
   return (
     <div className="rounded-2xl shadow-sm overflow-hidden" style={{ border: '1px solid rgba(214,153,60,0.2)' }}>
-      <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg,#325862,#d6993c)' }} />
+      <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, var(--admin), var(--accent))' }} />
       <div className="p-5">
         {/* Header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#325862,#243f47)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--admin), var(--admin-dark))' }}>
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
               <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13 0h-2v2h2v-2zm0 4h-2v2h2v-2zm2-4h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-8h2v2h-2v-2zm4 0h2v2h-2v-2zm-2 2h-2v2h2v-2z" />
             </svg>
           </div>
           <div>
-            <h2 className="font-black text-base" style={{ color: '#1a1a1a' }}>Table QR Codes</h2>
+            <h2 className="font-black text-base" style={{ color: 'var(--text-body)' }}>Table QR Codes</h2>
             <p className="text-xs text-gray-400">Generate & print QR codes for each table</p>
           </div>
         </div>
@@ -151,14 +153,14 @@ const QRGenerator = () => {
             onChange={(e) => { setTableCount(e.target.value); setGenerated(false); }}
             placeholder="How many tables? (e.g. 8)"
             className="flex-1 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none border"
-            style={{ borderColor: 'rgba(214,153,60,0.4)', color: '#1a1a1a', background: '#fafaf8' }}
-            onFocus={(e) => { e.target.style.borderColor = '#d6993c'; e.target.style.boxShadow = '0 0 0 3px rgba(214,153,60,0.15)'; }}
+            style={{ borderColor: 'rgba(214,153,60,0.4)', color: 'var(--text-body)', background: '#fafaf8' }}
+            onFocus={(e) => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px rgba(214,153,60,0.15)'; }}
             onBlur={(e) => { e.target.style.borderColor = 'rgba(214,153,60,0.4)'; e.target.style.boxShadow = 'none'; }}
           />
           <button
             onClick={() => { if (parseInt(tableCount) > 0) setGenerated(true); }}
             className="px-5 py-2.5 rounded-xl text-sm font-black text-white transition-all active:scale-[0.98]"
-            style={{ background: 'linear-gradient(135deg,#325862,#243f47)', boxShadow: '0 4px 12px rgba(50,88,98,0.3)' }}
+            style={{ background: 'linear-gradient(135deg, var(--admin), var(--admin-dark))', boxShadow: '0 4px 12px rgba(50,88,98,0.3)' }}
           >
             Generate
           </button>
@@ -177,7 +179,7 @@ const QRGenerator = () => {
                     className="w-full aspect-square rounded-lg"
                     style={{ maxWidth: 100 }}
                   />
-                  <p className="font-black text-xs mt-2" style={{ color: '#325862' }}>Table {n}</p>
+                  <p className="font-black text-xs mt-2" style={{ color: 'var(--admin)' }}>Table {n}</p>
                 </div>
               ))}
             </div>
@@ -186,7 +188,7 @@ const QRGenerator = () => {
             <button
               onClick={handlePrint}
               className="w-full py-3 rounded-xl text-sm font-black text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg,#982829,#d6993c)', boxShadow: '0 4px 16px rgba(152,40,41,0.3)' }}
+              style={{ background: 'linear-gradient(135deg, var(--primary-dark), var(--accent))', boxShadow: '0 4px 16px rgba(152,40,41,0.3)' }}
             >
               <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white">
                 <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z" />
@@ -202,6 +204,7 @@ const QRGenerator = () => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 const AdminDashboard = () => {
+  const { isDark } = useTheme();
   const navigate = useNavigate();
   const { supported: pushSupported, subscribed: pushSubscribed, loading: pushLoading, subscribe: pushSubscribe, unsubscribe: pushUnsubscribe } = usePushNotifications();
   const [tab, setTab] = useState('orders');
@@ -242,7 +245,7 @@ const AdminDashboard = () => {
 
   // ── Auth check ────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const token = localStorage.getItem('velvet_vault_admin_token');
+    const token = localStorage.getItem(cafeConfig.admin.tokenKey);
     if (!token) {
       navigate('/admin/login', { replace: true });
       return;
@@ -254,20 +257,20 @@ const AdminDashboard = () => {
       const payload = JSON.parse(atob(padded));
       setAdminName(payload.name || 'Admin');
       if (payload.exp && payload.exp * 1000 < Date.now()) {
-        localStorage.removeItem('velvet_vault_admin_token');
+        localStorage.removeItem(cafeConfig.admin.tokenKey);
         navigate('/admin/login', { replace: true });
         return;
       }
       setAuthReady(true);
     } catch (_) {
       // Token unreadable — clear and redirect once
-      localStorage.removeItem('velvet_vault_admin_token');
+      localStorage.removeItem(cafeConfig.admin.tokenKey);
       navigate('/admin/login', { replace: true });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = useCallback(() => {
-    localStorage.removeItem('velvet_vault_admin_token');
+    localStorage.removeItem(cafeConfig.admin.tokenKey);
     navigate('/admin/login', { replace: true });
   }, [navigate]);
 
@@ -315,7 +318,7 @@ const AdminDashboard = () => {
   const clearNotifications = useCallback(() => {
     setUnreadCount(0);
     clearInterval(titleFlashRef.current);
-    document.title = 'Velvet Vault Admin';
+    document.title = `${cafeConfig.name} Admin`;
   }, []);
 
   // ── Logo upload (admin only) ──────────────────────────────────────────────────
@@ -377,7 +380,7 @@ const AdminDashboard = () => {
           clearInterval(titleFlashRef.current);
           let show = true;
           titleFlashRef.current = setInterval(() => {
-            document.title = show ? '🔔 New Order — Velvet Vault' : 'Velvet Vault Admin';
+            document.title = show ? `🔔 New Order — ${cafeConfig.name}` : `${cafeConfig.name} Admin`;
             show = !show;
           }, 900);
 
@@ -388,7 +391,7 @@ const AdminDashboard = () => {
           newOrders.slice(0, 3).forEach((order) => {
             toast.custom(() => (
               <div style={{
-                background: 'linear-gradient(135deg,#243f47,#325862)',
+                background: 'linear-gradient(135deg, var(--admin-dark), var(--admin))',
                 border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: '16px',
                 padding: '14px 16px',
@@ -401,7 +404,7 @@ const AdminDashboard = () => {
               }}>
                 <span style={{ fontSize: '24px', lineHeight: 1 }}>🛎️</span>
                 <div>
-                  <p style={{ color: '#d6993c', fontWeight: 900, fontSize: '13px', margin: 0, letterSpacing: '0.05em' }}>
+                  <p style={{ color: 'var(--accent)', fontWeight: 900, fontSize: '13px', margin: 0, letterSpacing: '0.05em' }}>
                     New Order!
                   </p>
                   <p style={{ color: 'white', fontSize: '12px', margin: '4px 0 0', fontWeight: 600 }}>
@@ -472,7 +475,7 @@ const AdminDashboard = () => {
         clearInterval(titleFlashRef.current);
         let show = true;
         titleFlashRef.current = setInterval(() => {
-          document.title = show ? `⚠️ ${unprepared.length} Order${unprepared.length > 1 ? 's' : ''} Waiting!` : 'Velvet Vault Admin';
+          document.title = show ? `⚠️ ${unprepared.length} Order${unprepared.length > 1 ? 's' : ''} Waiting!` : `${cafeConfig.name} Admin`;
           show = !show;
         }, 700);
 
@@ -664,27 +667,28 @@ const AdminDashboard = () => {
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center font-montserrat bg-gray-50 dark:bg-gray-900">
       <div className="text-center">
-        <div className="w-10 h-10 border-4 border-gray-200 border-t-[#007B8B] rounded-full spin mx-auto mb-4" />
+        <div className="w-10 h-10 border-4 border-gray-200 border-t-[var(--admin-accent)] rounded-full spin mx-auto mb-4" />
         <p className="text-gray-400 text-sm">Loading dashboard…</p>
       </div>
     </div>
   );
 
   // ── CSS helpers using inline styles (dark mode via data- or class on root) ────
+  // const { isDark } = useTheme();
   const C = {
-    bg: 'bg-gray-50 dark:bg-gray-900',
-    card: 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700',
-    text: 'text-gray-800 dark:text-gray-100',
-    muted: 'text-gray-500 dark:text-gray-300',
-    border: 'border-gray-100 dark:border-gray-700',
-    input: 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-100',
+    bg: isDark ? 'bg-[var(--admin-bg-dark)]' : 'bg-[var(--admin-bg)]',
+    card: isDark ? 'bg-[var(--admin-card-dark)] border border-[var(--admin-border-dark)]' : 'bg-white border border-[var(--admin-card)]',
+    text: isDark ? 'text-[var(--admin-text-dark)]' : 'text-[var(--admin-text)]',
+    muted: isDark ? 'text-[var(--admin-muted-dark)]' : 'text-[var(--admin-muted)]',
+    border: isDark ? 'border-[var(--admin-border-dark)]' : 'border-[var(--admin-border)]',
+    input: isDark ? 'bg-[var(--admin-input-dark)] border-[var(--admin-input-border-dark)] text-[var(--admin-input-text-dark)]' : 'bg-[var(--admin-input)] border-[var(--admin-input-border)] text-[var(--admin-input-text)]',
   };
 
   return (
     <div className={`min-h-screen font-montserrat ${C.bg} transition-colors duration-300`}>
 
       {/* ── Top Bar ────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 shadow-lg" style={{ background: 'linear-gradient(135deg,#243f47 0%,#325862 100%)' }}>
+      <header className="sticky top-0 z-40 shadow-lg" style={{ background: 'linear-gradient(135deg, var(--admin-dark) 0%, var(--admin) 100%)' }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             {localStorage.getItem('velvet_logo_url') ? (
@@ -750,13 +754,13 @@ const AdminDashboard = () => {
       <div className={`${C.card} border-b shadow-sm`} style={{ borderBottom: undefined }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex gap-3 overflow-x-auto no-scrollbar">
           {[
-            { label: "Today's Sales", value: `₹${stats.totalSales.toLocaleString()}`, color: '#d6993c' },
+            { label: "Today's Sales", value: `₹${stats.totalSales.toLocaleString()}`, color: 'var(--admin-stat-sales)' },
             { label: 'Orders Today', value: stats.totalOrders, color: undefined },
-            { label: 'Pending', value: pendingCount, color: '#d97706' },
-            { label: 'Available', value: menuItems.filter((i) => i.available).length, color: '#059669' },
+            { label: 'Pending', value: pendingCount, color: 'var(--admin-stat-pending)' },
+            { label: 'Available', value: menuItems.filter((i) => i.available).length, color: 'var(--admin-stat-available)' },
           ].map((s) => (
             <div key={s.label} className={`flex-shrink-0 ${C.card} rounded-xl px-4 py-2.5 text-center min-w-[90px] shadow-sm`}>
-              <p className="font-black text-lg leading-none" style={{ color: s.color || (document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#1F1F1F') }}>
+              <p className="font-black text-lg leading-none" style={{ color: s.color || (document.documentElement.classList.contains('dark') ? '#f3f4f6' : 'var(--text-body)') }}>
                 {s.value}
               </p>
               <p className={`${C.muted} text-[10px] font-bold uppercase tracking-wide mt-1`}>{s.label}</p>
@@ -786,8 +790,8 @@ const AdminDashboard = () => {
               }}
               className="flex-1 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wide border-b-2 transition-all relative text-center"
               style={{
-                borderBottomColor: tab === t.id ? '#007B8B' : 'transparent',
-                color: tab === t.id ? '#007B8B' : '#9ca3af',
+                borderBottomColor: tab === t.id ? 'var(--admin-tab-active)' : 'transparent',
+                color: tab === t.id ? 'var(--admin-tab-active)' : 'var(--admin-tab-inactive)',
               }}
             >
               {t.label}
@@ -817,9 +821,9 @@ const AdminDashboard = () => {
                     <button key={s} onClick={() => setStatusFilter(s)}
                       className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border transition-all capitalize"
                       style={{
-                        background: statusFilter === s ? '#325862' : (document.documentElement.classList.contains('dark') ? '#374151' : 'white'),
-                        color: statusFilter === s ? 'white' : '#6b7280',
-                        borderColor: statusFilter === s ? '#325862' : (document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb'),
+                        background: statusFilter === s ? 'var(--admin)' : (document.documentElement.classList.contains('dark') ? '#374151' : 'white'),
+                        color: statusFilter === s ? 'white' : 'var(--admin-tab-inactive)',
+                        borderColor: statusFilter === s ? 'var(--admin)' : (document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb'),
                       }}
                     >
                       {s === 'all' ? 'All' : STATUS_LABELS[s]} ({count})
@@ -846,9 +850,9 @@ const AdminDashboard = () => {
                 <button key={t.id} onClick={() => setOrderTypeFilter(t.id)}
                   className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold border transition-all"
                   style={{
-                    background: orderTypeFilter === t.id ? '#940901' : (document.documentElement.classList.contains('dark') ? '#374151' : 'white'),
-                    color: orderTypeFilter === t.id ? 'white' : '#6b7280',
-                    borderColor: orderTypeFilter === t.id ? '#940901' : (document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb'),
+                    background: orderTypeFilter === t.id ? 'var(--admin-takeaway-badge)' : (document.documentElement.classList.contains('dark') ? '#374151' : 'white'),
+                    color: orderTypeFilter === t.id ? 'white' : 'var(--admin-tab-inactive)',
+                    borderColor: orderTypeFilter === t.id ? 'var(--admin-takeaway-badge)' : (document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb'),
                   }}>
                   {t.label}
                 </button>
@@ -865,22 +869,22 @@ const AdminDashboard = () => {
             ) : filteredOrders.map((order) => (
               <div key={order._id}
                 className={`${C.card} rounded-2xl overflow-hidden transition-all duration-300 shadow-sm`}
-                style={{ borderLeft: order.status === 'pending' ? '3px solid #f59e0b' : '3px solid transparent' }}
+                style={{ borderLeft: order.status === 'pending' ? '3px solid var(--admin-pending-border)' : '3px solid transparent' }}
               >
                 {/* Header */}
                 <div className="px-4 py-3 flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`font-black ${C.text} text-sm`}>{order.customerName}</span>
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,123,139,0.1)', color: '#d6993c' }}>{order.tableNumber}</span>
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,123,139,0.1)', color: 'var(--admin-table-badge)' }}>{order.tableNumber}</span>
                       <span
                         className="text-xs font-black px-2 py-0.5 rounded-full uppercase tracking-wide"
                         style={{
                           background: (order.orderType || 'dine-in') === 'takeaway'
                             ? 'rgba(148,9,1,0.12)' : 'rgba(49,96,61,0.12)',
                           color: (order.orderType || 'dine-in') === 'takeaway'
-                            ? '#940901' : '#31603D',
-                          border: `1px solid ${(order.orderType || 'dine-in') === 'takeaway' ? '#940901' : '#31603D'}`,
+                            ? 'var(--admin-takeaway-badge)' : 'var(--admin-dine-in-badge)',
+                          border: `1px solid ${(order.orderType || 'dine-in') === 'takeaway' ? 'var(--admin-takeaway-badge)' : 'var(--admin-dine-in-badge)'}`,
                         }}
                       >
                         {(order.orderType || 'dine-in') === 'takeaway' ? '🛍️ Takeaway' : '🍽️ Dine In'}
@@ -892,7 +896,7 @@ const AdminDashboard = () => {
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="font-black text-base" style={{ color: '#d6993c' }}>₹{order.totalAmount}</p>
+                    <p className="font-black text-base" style={{ color: 'var(--admin-order-amount)' }}>₹{order.totalAmount}</p>
                     <p className={`${C.muted} text-xs`}>{order.items.length} item(s)</p>
                   </div>
                 </div>
@@ -908,7 +912,7 @@ const AdminDashboard = () => {
                             className="text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wide"
                             style={{
                               background: item.selectedSize === 'half' ? 'rgba(214,153,60,0.2)' : 'rgba(0,123,139,0.12)',
-                              color: item.selectedSize === 'half' ? '#b37d2e' : '#007B8B',
+                              color: item.selectedSize === 'half' ? 'var(--accent-dark)' : 'var(--admin-accent)',
                             }}
                           >
                             {item.selectedSize === 'half' ? 'Half' : 'Full'}
@@ -927,38 +931,38 @@ const AdminDashboard = () => {
                   <div className={`px-4 pb-3 border-t ${C.border} pt-2 flex flex-wrap gap-2 items-center`}>
                     {order.phoneNumber && (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
-                        style={{ background: 'rgba(49,96,61,0.1)', color: '#31603D', border: '1px solid rgba(49,96,61,0.25)' }}>
+                        style={{ background: 'rgba(49,96,61,0.1)', color: 'var(--admin-phone-pill)', border: '1px solid rgba(49,96,61,0.25)' }}>
                         📞 {order.phoneNumber}
                       </span>
                     )}
                     {order.pickupToken && (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black"
-                        style={{ background: 'rgba(148,9,1,0.1)', color: '#940901', border: '1px solid rgba(148,9,1,0.25)' }}>
+                        style={{ background: 'rgba(148,9,1,0.1)', color: 'var(--admin-pickup-pill)', border: '1px solid rgba(148,9,1,0.25)' }}>
                         🎫 {order.pickupToken}
                       </span>
                     )}
                     {order.utrNumber && (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold"
-                        style={{ background: 'rgba(0,123,139,0.08)', color: '#007B8B', border: '1px solid rgba(0,123,139,0.2)' }}>
+                        style={{ background: 'rgba(0,123,139,0.08)', color: 'var(--admin-utr-pill)', border: '1px solid rgba(0,123,139,0.2)' }}>
                         🔗 {order.utrNumber}
                       </span>
                     )}
                     {order.paymentMethod && order.paymentMethod !== 'not_required' && (
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold"
-                        style={{ background: 'rgba(214,153,60,0.1)', color: '#b37d2e', border: '1px solid rgba(214,153,60,0.25)' }}>
+                        style={{ background: 'rgba(214,153,60,0.1)', color: 'var(--admin-payment-pill)', border: '1px solid rgba(214,153,60,0.25)' }}>
                         {order.paymentMethod === 'upi' ? '📱 UPI' : order.paymentMethod === 'debit-card' ? '💳 Debit' : '💳 Credit'}
                       </span>
                     )}
                     {order.paymentStatus === 'pending_verification' && (
                       <button onClick={() => verifyPayment(order._id)}
                         className="ml-auto px-3 py-1 rounded-lg text-xs font-black text-white active:scale-95 transition-all"
-                        style={{ background: 'linear-gradient(135deg,#059669,#047857)' }}>
+                        style={{ background: `linear-gradient(135deg, var(--admin-verified-pill), #047857)` }}>
                         ✓ Verify Payment
                       </button>
                     )}
                     {order.paymentStatus === 'paid' && (
                       <span className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold"
-                        style={{ background: 'rgba(5,150,105,0.1)', color: '#059669', border: '1px solid rgba(5,150,105,0.25)' }}>
+                        style={{ background: 'rgba(5,150,105,0.1)', color: 'var(--admin-verified-pill)', border: '1px solid rgba(5,150,105,0.25)' }}>
                         ✅ Verified
                       </span>
                     )}
@@ -970,7 +974,7 @@ const AdminDashboard = () => {
                   {order.status !== 'completed' && (
                     <button onClick={() => updateOrderStatus(order._id, NEXT_STATUS[order.status])}
                       className="flex-1 py-2 rounded-xl text-xs font-black tracking-wide uppercase transition-all active:scale-[0.98] text-white"
-                      style={{ background: order.status === 'pending' ? 'linear-gradient(135deg,#22c55e,#16a34a)' : order.status === 'accepted' ? 'linear-gradient(135deg,#3b82f6,#1d4ed8)' : order.status === 'preparing' ? 'linear-gradient(135deg,#10b981,#047857)' : 'linear-gradient(135deg,#6b7280,#4b5563)' }}>
+                      style={{ background: order.status === 'pending' ? `linear-gradient(135deg, var(--admin-btn-accept), #16a34a)` : order.status === 'accepted' ? `linear-gradient(135deg, var(--admin-btn-cook), #1d4ed8)` : order.status === 'preparing' ? `linear-gradient(135deg, var(--admin-btn-ready), #047857)` : `linear-gradient(135deg, var(--admin-btn-complete), #4b5563)` }}>
                       {NEXT_LABELS[order.status]}
                     </button>
                   )}
@@ -1003,7 +1007,7 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className={`font-black ${C.text} text-base`}>Menu Items <span className={`${C.muted} font-normal`}>({menuItems.length})</span></h2>
               <button onClick={openAddForm} className="text-white text-xs font-black px-4 py-2 rounded-full active:scale-95 transition-all"
-                style={{ background: 'linear-gradient(135deg,#325862,#243f47)' }}>
+                style={{ background: 'linear-gradient(135deg, var(--admin), var(--admin-dark))' }}>
                 + Add Item
               </button>
             </div>
@@ -1014,9 +1018,9 @@ const AdminDashboard = () => {
               return (
                 <div key={cat} className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg,#007B8B,transparent)' }} />
-                    <h3 className="font-black text-xs uppercase tracking-widest px-2" style={{ color: '#d6993c' }}>{cat}</h3>
-                    <div className="h-px flex-1" style={{ background: 'linear-gradient(270deg,#007B8B,transparent)' }} />
+                    <div className="h-px flex-1" style={{ background: 'linear-gradient(90deg, var(--admin-menu-divider), transparent)' }} />
+                    <h3 className="font-black text-xs uppercase tracking-widest px-2" style={{ color: 'var(--admin-menu-cat-title)' }}>{cat}</h3>
+                    <div className="h-px flex-1" style={{ background: 'linear-gradient(270deg, var(--admin-menu-divider), transparent)' }} />
                   </div>
                   <div className="space-y-2">
                     {catItems.map((item) => (
@@ -1028,12 +1032,12 @@ const AdminDashboard = () => {
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
                               <p className="font-bold text-gray-800 dark:text-gray-100 text-sm leading-tight truncate">{item.name}</p>
-                              <p className="text-gray-500 dark:text-gray-300 text-xs mt-0.5">{item.subCategory} · <span style={{ color: '#d6993c' }} className="font-bold">₹{item.price}</span></p>
+                              <p className="text-gray-500 dark:text-gray-300 text-xs mt-0.5">{item.subCategory} · <span style={{ color: 'var(--admin-menu-price)' }} className="font-bold">₹{item.price}</span></p>
                             </div>
                             <div className="flex gap-1 flex-shrink-0 items-center">
                               <button onClick={() => toggleAvailability(item)}
                                 className="text-xs px-2 py-1 rounded-lg font-bold border transition-all"
-                                style={item.available ? { background: 'rgba(214,153,60,0.15)', color: '#325862', borderColor: '#d6993c' } : { background: document.documentElement.classList.contains('dark') ? '#374151' : '#f3f4f6', color: '#9ca3af', borderColor: document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb' }}>
+                                style={item.available ? { background: 'var(--admin-menu-on-bg)', color: 'var(--admin)', borderColor: 'var(--admin-menu-on-border)' } : { background: document.documentElement.classList.contains('dark') ? '#374151' : '#f3f4f6', color: 'var(--admin-tab-inactive)', borderColor: document.documentElement.classList.contains('dark') ? '#4b5563' : '#e5e7eb' }}>
                                 {item.available ? 'ON' : 'OFF'}
                               </button>
                               <button onClick={() => openEditForm(item)} className={`p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 ${C.muted} hover:text-gray-600 dark:hover:text-gray-200 transition-colors`}>
@@ -1059,13 +1063,13 @@ const AdminDashboard = () => {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Today's Revenue", value: `₹${stats.totalSales.toLocaleString()}`, color: '#d6993c' },
+                { label: "Today's Revenue", value: `\`₹${stats.totalSales.toLocaleString()}\``, color: 'var(--admin-stat-sales)' },
                 { label: 'Total Orders', value: stats.totalOrders, color: undefined },
-                { label: 'Completed', value: orders.filter((o) => o.status === 'completed').length, color: '#059669' },
-                { label: 'Pending', value: pendingCount, color: '#d97706' },
+                { label: 'Completed', value: orders.filter((o) => o.status === 'completed').length, color: 'var(--admin-stat-available)' },
+                { label: 'Pending', value: pendingCount, color: 'var(--admin-stat-pending)' },
               ].map((s) => (
                 <div key={s.label} className={`${C.card} rounded-2xl p-4 text-center shadow-sm`}>
-                  <p className="font-black text-2xl" style={{ color: s.color || (document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#1F1F1F') }}>{s.value}</p>
+                  <p className="font-black text-2xl" style={{ color: s.color || (document.documentElement.classList.contains('dark') ? '#f3f4f6' : 'var(--text-body)') }}>{s.value}</p>
                   <p className={`${C.muted} text-xs font-bold uppercase tracking-wide mt-1`}>{s.label}</p>
                 </div>
               ))}
@@ -1080,7 +1084,7 @@ const AdminDashboard = () => {
                   <div key={s} className="flex items-center gap-3 mb-3">
                     <span className={`text-xs font-bold ${C.muted} w-20 capitalize`}>{STATUS_LABELS[s]}</span>
                     <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-2">
-                      <div className="h-2 rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#007B8B,#014F5A)' }} />
+                      <div className="h-2 rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, var(--admin-accent), var(--admin-accent-dark))' }} />
                     </div>
                     <span className={`text-xs font-black ${C.text} w-6 text-right`}>{count}</span>
                   </div>
@@ -1107,12 +1111,12 @@ const AdminDashboard = () => {
             {/* ── Push Notifications ── */}
             {pushSupported && (
               <div className={`${C.card} rounded-2xl shadow-sm overflow-hidden`}>
-                <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg,#325862,#d6993c)' }} />
+                <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, var(--admin), var(--accent))' }} />
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: pushSubscribed ? 'linear-gradient(135deg,#059669,#047857)' : 'linear-gradient(135deg,#325862,#243f47)' }}>
+                        style={{ background: pushSubscribed ? 'linear-gradient(135deg, var(--admin-stat-available), #047857)' : 'linear-gradient(135deg, var(--admin), var(--admin-dark))' }}>
                         <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
                           <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
                         </svg>
@@ -1133,7 +1137,7 @@ const AdminDashboard = () => {
                       style={{
                         background: pushSubscribed
                           ? 'linear-gradient(135deg,#dc2626,#b91c1c)'
-                          : 'linear-gradient(135deg,#059669,#047857)',
+                          : 'linear-gradient(135deg, var(--admin-stat-available), #047857)',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                       }}
                     >
@@ -1152,11 +1156,11 @@ const AdminDashboard = () => {
             {/* ── Logo Upload (admin only) ── */}
             <div className={`${C.card} rounded-2xl shadow-sm overflow-hidden`}>
               {/* Card header strip */}
-              <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg,#982829,#d6993c,#325862)' }} />
+              <div className="h-1 w-full" style={{ background: 'linear-gradient(90deg, var(--primary-dark), var(--accent), var(--admin))' }} />
               <div className="p-5">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg,#325862,#243f47)' }}>
+                    style={{ background: 'linear-gradient(135deg, var(--admin), var(--admin-dark))' }}>
                     <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
                       <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
                     </svg>
@@ -1175,7 +1179,7 @@ const AdminDashboard = () => {
                     {logoPreview ? (
                       <img src={logoPreview} alt="Logo preview" className="w-full h-full object-cover" />
                     ) : (
-                      <svg viewBox="0 0 24 24" className="w-9 h-9" style={{ fill: '#d6993c', opacity: 0.45 }}>
+                      <svg viewBox="0 0 24 24" className="w-9 h-9" style={{ fill: 'var(--accent)', opacity: 0.45 }}>
                         <path d="M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 5v3H6V5h10zm2.5 3H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 8 18.5 8zM4 19h16v2H4z" />
                       </svg>
                     )}
@@ -1197,7 +1201,7 @@ const AdminDashboard = () => {
                         style={{
                           background: logoUploading
                             ? 'rgba(50,88,98,0.5)'
-                            : 'linear-gradient(135deg,#325862,#243f47)',
+                            : 'linear-gradient(135deg, var(--admin), var(--admin-dark))',
                           cursor: logoUploading ? 'not-allowed' : 'pointer',
                           fontFamily: 'Poppins,sans-serif',
                           boxShadow: '0 4px 12px rgba(50,88,98,0.3)',
@@ -1268,36 +1272,36 @@ const AdminDashboard = () => {
                 <div>
                   <label className={`block ${C.muted} font-bold text-xs mb-1`}>Super Category *</label>
                   <select value={menuForm.superCategory} onChange={(e) => setMenuForm({ ...menuForm, superCategory: e.target.value })}
-                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`}>
+                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`}>
                     {SUPER_CATS.map((c) => <option key={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className={`block ${C.muted} font-bold text-xs mb-1`}>Sub Category *</label>
                   <input type="text" value={menuForm.subCategory} onChange={(e) => setMenuForm({ ...menuForm, subCategory: e.target.value })} placeholder="e.g. Momos"
-                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
                 </div>
               </div>
               <div>
                 <label className={`block ${C.muted} font-bold text-xs mb-1`}>Item Name *</label>
                 <input type="text" value={menuForm.name} onChange={(e) => setMenuForm({ ...menuForm, name: e.target.value })} placeholder="e.g. Paneer Burger"
-                  className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                  className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
               </div>
               <div>
                 <label className={`block ${C.muted} font-bold text-xs mb-1`}>Description</label>
                 <input type="text" value={menuForm.description} onChange={(e) => setMenuForm({ ...menuForm, description: e.target.value })} placeholder="Short description"
-                  className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                  className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={`block ${C.muted} font-bold text-xs mb-1`}>Price (₹)</label>
                   <input type="number" value={menuForm.price} onChange={(e) => setMenuForm({ ...menuForm, price: e.target.value })} placeholder="Regular price" min="0"
-                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
                 </div>
                 <div>
                   <label className={`block ${C.muted} font-bold text-xs mb-1`}>Type</label>
                   <select value={menuForm.veg ? 'veg' : 'nonveg'} onChange={(e) => setMenuForm({ ...menuForm, veg: e.target.value === 'veg' })}
-                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`}>
+                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`}>
                     <option value="veg">🟢 Veg</option>
                     <option value="nonveg">🔴 Non-Veg</option>
                   </select>
@@ -1311,32 +1315,32 @@ const AdminDashboard = () => {
                   <div>
                     <label className={`block ${C.muted} font-bold text-xs mb-1`}>Half Price (₹)</label>
                     <input type="number" value={menuForm.halfPrice} onChange={(e) => setMenuForm({ ...menuForm, halfPrice: e.target.value })} placeholder="e.g. 80" min="0"
-                      className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                      className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
                   </div>
                   <div>
                     <label className={`block ${C.muted} font-bold text-xs mb-1`}>Full Price (₹)</label>
                     <input type="number" value={menuForm.fullPrice} onChange={(e) => setMenuForm({ ...menuForm, fullPrice: e.target.value })} placeholder="e.g. 140" min="0"
-                      className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                      className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
                   </div>
                 </div>
                 <div>
                   <label className={`block ${C.muted} font-bold text-xs mb-1`}>Half Plate Description</label>
                   <input type="text" value={menuForm.halfDescription} onChange={(e) => setMenuForm({ ...menuForm, halfDescription: e.target.value })} placeholder="e.g. 3 pcs, great for one"
-                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
                 </div>
                 <div>
                   <label className={`block ${C.muted} font-bold text-xs mb-1`}>Full Plate Description</label>
                   <input type="text" value={menuForm.fullDescription} onChange={(e) => setMenuForm({ ...menuForm, fullDescription: e.target.value })} placeholder="e.g. 6 pcs, perfect for sharing"
-                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                    className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
                 </div>
               </div>
               <div>
                 <label className={`block ${C.muted} font-bold text-xs mb-1`}>Image URL</label>
                 <input type="url" value={menuForm.image} onChange={(e) => setMenuForm({ ...menuForm, image: e.target.value })} placeholder="https://..."
-                  className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#007B8B] ${C.input}`} />
+                  className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--admin-accent)] ${C.input}`} />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={menuForm.available} onChange={(e) => setMenuForm({ ...menuForm, available: e.target.checked })} className="w-4 h-4" style={{ accentColor: '#007B8B' }} />
+                <input type="checkbox" checked={menuForm.available} onChange={(e) => setMenuForm({ ...menuForm, available: e.target.checked })} className="w-4 h-4" style={{ accentColor: 'var(--admin-accent)' }} />
                 <span className={`${C.text} font-bold text-sm`}>Available today</span>
               </label>
               {formError && <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl px-3 py-2 text-red-600 dark:text-red-400 text-xs font-medium">{formError}</div>}
@@ -1419,7 +1423,7 @@ const AdminDashboard = () => {
           <div className="text-4xl mb-3">📤</div>
           <h3 className={`font-black ${C.text} text-base mb-1.5`}>Export All &amp; Clear?</h3>
           <p className={`${C.muted} text-sm mb-5`}>
-            This will send <span className="font-bold" style={{ color: '#d6993c' }}>{orders.length} orders</span> to WhatsApp, then permanently delete them all.
+            This will send <span className="font-bold" style={{ color: 'var(--accent)' }}>{orders.length} orders</span> to WhatsApp, then permanently delete them all.
           </p>
           <div className="flex gap-3">
             <button onClick={() => setClearAllConfirm(false)} disabled={actionLoading}

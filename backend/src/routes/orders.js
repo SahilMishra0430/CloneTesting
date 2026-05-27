@@ -1,17 +1,19 @@
 const express = require('express');
-const Order   = require('../models/Order');
-const { protect }     = require('../middleware/auth');
+const Order = require('../models/Order');
+const { protect } = require('../middleware/auth');
 const requireShopOpen = require('../middleware/shopStatus');
-const webpush          = require('web-push');
+const webpush = require('web-push');
 const PushSubscription = require('../models/PushSubscription');
 
 const router = express.Router();
 
 // ── VAPID setup ───────────────────────────────────────────────────────────────
+const cafeConfig = require('../config/cafeConfig');
+
 webpush.setVapidDetails(
-  'mailto:admin@velvetvault.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
+  `mailto:${cafeConfig.cafe.vapidEmail}`,
+  cafeConfig.env.vapidPublicKey,
+  cafeConfig.env.vapidPrivateKey
 );
 
 // ── Send push notification to all subscribed admin devices ───────────────────
@@ -22,7 +24,7 @@ const sendOrderPush = async (order) => {
 
     const payload = JSON.stringify({
       title: '🛎️ New Order — Velvet Vault',
-      body:  `${order.orderType === 'takeaway' ? '🥡 Takeaway' : `🪑 Table ${order.tableNumber}`} · ${order.customerName} · ₹${order.totalAmount}`,
+      body: `${order.orderType === 'takeaway' ? '🥡 Takeaway' : `🪑 Table ${order.tableNumber}`} · ${order.customerName} · ₹${order.totalAmount}`,
       orderId: String(order._id),
     });
 
@@ -37,7 +39,7 @@ const sendOrderPush = async (order) => {
       if (result.status === 'rejected') {
         const code = result.reason?.statusCode;
         if (code === 404 || code === 410) {
-          PushSubscription.deleteOne({ endpoint: subs[i].endpoint }).catch(() => {});
+          PushSubscription.deleteOne({ endpoint: subs[i].endpoint }).catch(() => { });
         }
       }
     });
@@ -93,14 +95,14 @@ router.post('/', requireShopOpen, async (req, res) => {
 
     const order = new Order({
       customerName,
-      phoneNumber:   phoneNumber   || '',
-      tableNumber:   isTakeaway ? 'Takeaway' : tableNumber,
-      orderType:     isTakeaway ? 'takeaway' : 'dine-in',
+      phoneNumber: phoneNumber || '',
+      tableNumber: isTakeaway ? 'Takeaway' : tableNumber,
+      orderType: isTakeaway ? 'takeaway' : 'dine-in',
       items,
       totalAmount,
-      note:          note || '',
+      note: note || '',
       paymentStatus: isTakeaway ? 'pending_verification' : 'not_required',
-      utrNumber:     isTakeaway ? utrNumber.trim() : '',
+      utrNumber: isTakeaway ? utrNumber.trim() : '',
       paymentMethod: resolvedPaymentMethod, // ← NEW
       pickupToken,
     });
@@ -108,7 +110,7 @@ router.post('/', requireShopOpen, async (req, res) => {
     await order.save();
 
     // Fire push to all admin devices — non-blocking, won't delay the response
-    sendOrderPush(order).catch(() => {});
+    sendOrderPush(order).catch(() => { });
 
     res.status(201).json(order);
   } catch (err) {
@@ -129,7 +131,7 @@ router.get('/', protect, async (req, res) => {
     }
     if (date) {
       const start = new Date(date); start.setHours(0, 0, 0, 0);
-      const end   = new Date(date); end.setHours(23, 59, 59, 999);
+      const end = new Date(date); end.setHours(23, 59, 59, 999);
       filter.createdAt = { $gte: start, $lte: end };
     }
 
@@ -147,10 +149,10 @@ router.get('/track/:id', async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: 'Order not found.' });
     res.json({
-      status:        order.status,
-      totalAmount:   order.totalAmount,
-      orderType:     order.orderType,
-      pickupToken:   order.pickupToken,
+      status: order.status,
+      totalAmount: order.totalAmount,
+      orderType: order.orderType,
+      pickupToken: order.pickupToken,
       paymentStatus: order.paymentStatus,
     });
   } catch (err) {
@@ -161,19 +163,19 @@ router.get('/track/:id', async (req, res) => {
 // ── GET /orders/daily-stats — admin only ──────────────────────────────────────
 router.get('/daily-stats', protect, async (req, res) => {
   try {
-    const today    = new Date(); today.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
 
     const orders = await Order.find({
       createdAt: { $gte: today, $lt: tomorrow },
-      status:    { $ne: 'cancelled' },
+      status: { $ne: 'cancelled' },
     });
 
-    const totalSales          = orders.reduce((sum, o) => sum + o.totalAmount, 0);
-    const totalOrders         = orders.length;
-    const dineInOrders        = orders.filter((o) => (o.orderType || 'dine-in') === 'dine-in').length;
-    const takeawayOrders      = orders.filter((o) => o.orderType === 'takeaway').length;
-    const takeawaySales       = orders.filter((o) => o.orderType === 'takeaway').reduce((sum, o) => sum + o.totalAmount, 0);
+    const totalSales = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+    const totalOrders = orders.length;
+    const dineInOrders = orders.filter((o) => (o.orderType || 'dine-in') === 'dine-in').length;
+    const takeawayOrders = orders.filter((o) => o.orderType === 'takeaway').length;
+    const takeawaySales = orders.filter((o) => o.orderType === 'takeaway').reduce((sum, o) => sum + o.totalAmount, 0);
     const pendingVerification = orders.filter((o) => o.paymentStatus === 'pending_verification').length;
 
     res.json({

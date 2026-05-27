@@ -6,13 +6,14 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const connectDB = require("./config/db");
-const paymentRoutes  = require('./routes/payments')
-const authRoutes     = require("./routes/auth");
-const menuRoutes     = require("./routes/menu");
-const orderRoutes    = require("./routes/orders");
+const paymentRoutes = require('./routes/payments')
+const authRoutes = require("./routes/auth");
+const menuRoutes = require("./routes/menu");
+const orderRoutes = require("./routes/orders");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const shopStatusRoutes = require("./routes/shopStatus");
-const pushRoutes     = require("./routes/push");
+const pushRoutes = require("./routes/push");
+const cafeConfig = require('./config/cafeConfig');
 
 const app = express();
 
@@ -104,7 +105,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = cafeConfig.env.port;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Allowed CORS origins:`, ALLOWED_ORIGINS);

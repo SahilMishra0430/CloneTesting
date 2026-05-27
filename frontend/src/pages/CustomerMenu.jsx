@@ -8,6 +8,7 @@ import OrderModal from '../components/OrderModal';
 import WelcomeModal from '../components/WelcomeModal';
 import { useCart } from '../context/CartContext';
 import api from '../api/axios';
+import { cafeConfig } from '../config/cafeConfig';
 import { getMyOrders, clearMyOrders } from '../utils/myOrders';
 
 // ── Status display config ─────────────────────────────────────────────────────
@@ -197,7 +198,7 @@ const MyOrdersPanel = ({ orders, onClose, onClear }) => {
 };
 
 
-const SUPER_CATEGORIES = ['All Items', 'Chinese', 'Snacks', 'Pasta & Maggie', 'Beverages', 'Combos',];
+const SUPER_CATEGORIES = cafeConfig.superCategories;
 
 const CustomerMenu = () => {
   const [searchParams] = useSearchParams();
@@ -361,7 +362,7 @@ const CustomerMenu = () => {
           {/* Super Category Tabs */}
           {!searchQuery && (
             <div className="sticky top-[125px] z-20 shadow-md"
-              style={{ background: '#D33244' }}>
+              style={{ background: 'var(--primary)' }}>
               <div className="max-w-lg mx-auto">
                 <div className="flex overflow-x-auto no-scrollbar px-3 py-2.5 gap-1.5">
                   {SUPER_CATEGORIES.map((cat) => {
@@ -407,8 +408,8 @@ const CustomerMenu = () => {
                         className="flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200"
                         style={{
                           fontFamily: 'Poppins, sans-serif',
-                          background: active ? '#4e2c21' : '#ffffff',
-                          color: active ? 'white' : '#4e2c21',
+                          background: active ? 'var(--pill-active)' : '#ffffff',
+                          color: active ? 'var(--pill-active-text)' : '#4e2c21',
                           borderColor: active ? '#dbc5ae' : 'rgba(229, 229, 229, 0.25)',
                         }}
                       >
@@ -442,7 +443,7 @@ const CustomerMenu = () => {
                 </p>
               </div>
             ) : (
-              <div className="bg-black bg-menu-section rounded-full mt-4 p-3 space-y-6" style={{ background: '#D33244' }}>
+              <div className="bg-black bg-menu-section rounded-full mt-4 p-3 space-y-6" style={{ background: 'var(--primary)' }}>
                 {Object.entries(groups).map(([subCat, items]) => (
                   <div key={subCat}>
                     {/* Section header */}
@@ -468,7 +469,7 @@ const CustomerMenu = () => {
             <div className="fixed bottom-5 left-0 right-0 flex justify-center z-30 px-4">
               <button onClick={toggleCart}
                 className="text-white rounded-2xl py-3.5 px-5 flex items-center gap-3 active:scale-[0.98] transition-all max-w-sm w-full shadow-gold-lg"
-                style={{ background: 'linear-gradient(135deg,#982829,#d6993c)', fontFamily: 'Poppins,sans-serif' }}>
+                style={{ background: 'linear-gradient(135deg, var(--primary-dark), var(--accent))', fontFamily: 'Poppins,sans-serif' }}>
                 <div className="bg-white rounded-xl w-8 h-8 flex items-center justify-center font-black text-sm flex-shrink-0"
                   style={{ color: '#982829' }}>
                   {totalItems}
